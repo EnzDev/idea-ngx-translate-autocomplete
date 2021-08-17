@@ -1,13 +1,23 @@
 <idea-plugin>
     <id>com.github.enzdev.ideangxtranslateautocomplete</id>
-    <name>idea-ngx-translate-autocomplete</name>
-    <vendor>enzdev</vendor>
+    <name>NgTranslate Toolset</name>
+    <vendor>EnzDev</vendor>
 
     <!-- Product and plugin compatibility requirements -->
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.java</depends>
+
+    <depends>com.intellij.modules.json</depends>
+    <depends>com.intellij.modules.xml</depends>
+    <depends>JavaScript</depends>
+    <depends>AngularJS</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <psi.referenceContributor language="Angular2"
+                                  implementation="com.github.enzdev.ideangxtranslateautocomplete.referenceContributor.TranslationReferenceContributor"/>
+
         <applicationService serviceImplementation="com.github.enzdev.ideangxtranslateautocomplete.services.MyApplicationService"/>
         <projectService serviceImplementation="com.github.enzdev.ideangxtranslateautocomplete.services.MyProjectService"/>
     </extensions>
