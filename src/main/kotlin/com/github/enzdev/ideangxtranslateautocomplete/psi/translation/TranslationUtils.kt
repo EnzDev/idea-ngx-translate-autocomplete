@@ -30,8 +30,7 @@ object TranslationUtils {
         return FileTypeIndex.getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
             .filter {
                 it.path.subSequence(project.basePath?.length ?: 0, it.path.length).contains("/assets/")
-            }.take(1)
-            .mapNotNull {
+            }.mapNotNull {
                 val jsonTranslationPath = path.listIterator()
 
                 val simpleFile: JsonFile? = PsiManager.getInstance(project).findFile(it) as JsonFile?
