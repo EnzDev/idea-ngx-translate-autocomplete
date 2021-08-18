@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiPolyVariantReference
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveResult
-import com.intellij.psi.xml.XmlText
 
 class TranslationPipeReference(element: JSLiteralExpression, textRange: TextRange) :
     PsiReferenceBase<PsiElement?>(element, textRange), PsiPolyVariantReference {
@@ -21,19 +20,10 @@ class TranslationPipeReference(element: JSLiteralExpression, textRange: TextRang
 
     override fun resolve(): PsiElement? =
         multiResolve(false).firstOrNull()?.element
-}
 
-class TranslationHtmlReference(element: XmlText, textRange: TextRange) :
-    PsiReferenceBase<PsiElement?>(element, textRange), PsiPolyVariantReference {
-    private val path: List<String> = element.value.split('.')
-
-    override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> =
+/*    override fun getVariants(): Array<Any> =
         TranslationUtils
-            .findTranslationKey(myElement!!.project, path)
-            .toTypedResolveResult()
-
-    override fun resolve(): PsiElement? =
-        multiResolve(false).firstOrNull()?.element
-
+            .findTranslationPartialKey(myElement!!.project, path)
+            .toTypedArray()*/
 }
 

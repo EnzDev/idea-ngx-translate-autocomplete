@@ -7,7 +7,6 @@
     <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.lang</depends>
-    <depends>com.intellij.java</depends>
 
     <depends>com.intellij.modules.json</depends>
     <depends>com.intellij.modules.xml</depends>
@@ -17,13 +16,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <psi.referenceContributor language="Angular2"
                                   implementation="com.github.enzdev.ideangxtranslateautocomplete.referenceContributor.TranslationReferenceContributor"/>
-
-        <applicationService serviceImplementation="com.github.enzdev.ideangxtranslateautocomplete.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.enzdev.ideangxtranslateautocomplete.services.MyProjectService"/>
+        <completion.contributor language="Angular2"
+                                implementationClass="com.github.enzdev.ideangxtranslateautocomplete.completion.TranslationReferenceCompletion"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.enzdev.ideangxtranslateautocomplete.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
 </idea-plugin>
