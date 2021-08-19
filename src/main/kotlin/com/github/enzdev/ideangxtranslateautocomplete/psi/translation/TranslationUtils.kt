@@ -23,7 +23,7 @@ fun List<JsonValue>.toTypedResolveResult(): Array<ResolveResult> = this
     .toTypedArray()
 
 object TranslationUtils {
-    fun findTranslationKey(project: Project, path: List<String>?): List<JsonValue> {
+    fun findTranslationKey(project: Project, path: List<String>?): List<JsonStringLiteral> {
         if (path == null || path.isEmpty()) return emptyList() // Don't bother filtering on files if path is empty
 
         // Provide better filtering on translation files
@@ -66,27 +66,41 @@ object TranslationUtils {
 
                 while (jsonValue != null && jsonTranslationPath.hasNext()) {
                     val fragment = jsonTranslationPath.next()
-                    if (jsonValue is JsonObject && jsonTranslationPath.hasNext()) { // Continue
-                        jsonValue = jsonValue.findProperty(fragment)?.let { prop ->
-                            constructedPath = constructedPath?.plus(".${prop.name}") ?: prop.name
-                            prop.value
+                    when {
+                        // Visitor
+                        jsonValue is JsonObject && jsonTranslationPath.hasNext() ->
+                            jsonValue = jsonValue.findProperty(fragment)?.also { prop ->
+                                constructedPath = constructedPath?.plus(".${prop.name}") ?: prop.name
+                            }?.value
+
+                        // Results
+                        jsonValue is JsonObject -> {
+                            // Find any candidate when key has been explored to a JsonObject
+                            jsonValue.propertyList
+                                .filter { prop -> prop.name.matches("$fragment.*".toRegex()) }
+                                .filter { prop -> prop.value != null }
+                                .onEach { prop ->
+                                    results.compute(
+                                        constructedPath
+                                            ?.let { "$constructedPath.${prop.name}" }
+                                            ?: prop.name
+                                    ) { _, list ->
+                                        list?.plus(prop.value!!) ?: listOf(prop.value!!)
+                                    }
+                                }
+                            break
                         }
-                    } else if (jsonValue is JsonObject) { // Find any candidate
-                        jsonValue.propertyList
-                            .filter { prop -> prop.name.matches("$fragment.*".toRegex()) }
-                            .onEach { prop ->
-                                results.compute("$constructedPath.${prop.name}") { _, list ->
+                        jsonValue is JsonStringLiteral -> {
+                            // Key is matching to a translation leaf
+                            (constructedPath ?: jsonValue.name)?.let { path ->
+                                results.compute(path) { _, list ->
                                     list?.plus(jsonValue) ?: listOf(jsonValue)
                                 }
                             }
-                    } else if (jsonValue is JsonStringLiteral) {
-                        (constructedPath?.plus(".${jsonValue.name}") ?: jsonValue.name)?.let { path ->
-                            results.compute(path) { _, list ->
-                                list?.plus(jsonValue) ?: listOf(jsonValue)
-                            }
+                            break
                         }
-                    } else {
-                        break
+                        else ->  break // Invalid situation
+
                     }
                 }
             }

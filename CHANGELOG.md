@@ -1,7 +1,8 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# idea-ngx-translate-autocomplete Changelog
+# NgTranslate Toolset Changelog
 
 ## [Unreleased]
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+ - Translation key referencing to json translations
+ - Translation key autocompletion in templates

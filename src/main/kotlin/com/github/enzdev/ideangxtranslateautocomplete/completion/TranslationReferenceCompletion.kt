@@ -4,7 +4,7 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.patterns.PlatformPatterns
-import org.angular2.lang.expr.psi.Angular2PipeLeftSideArgument
+import org.angular2.lang.expr.psi.Angular2Interpolation
 
 
 class TranslationReferenceCompletion : CompletionContributor() {
@@ -13,7 +13,7 @@ class TranslationReferenceCompletion : CompletionContributor() {
             CompletionType.BASIC,
             PlatformPatterns.psiElement()
                 .withParent(JSLiteralExpression::class.java)
-                .inside(Angular2PipeLeftSideArgument::class.java),
+                .inside(Angular2Interpolation::class.java),
             TranslationCompletionProvider()
         )
     }
