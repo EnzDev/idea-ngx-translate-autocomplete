@@ -1,10 +1,9 @@
-package com.github.enzdev.ideangxtranslateautocomplete.referenceContributor
+package fr.enzomallard.ngxtranslatetoolset.referenceContributor
 
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiReferenceContributor
 import com.intellij.psi.PsiReferenceRegistrar
-import org.angular2.lang.expr.psi.Angular2PipeExpression
 import org.angular2.lang.expr.psi.Angular2PipeLeftSideArgument
 
 

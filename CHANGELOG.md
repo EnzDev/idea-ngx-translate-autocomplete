@@ -2,7 +2,7 @@
 
 # NgTranslate Toolset Changelog
 
-## [Unreleased]
+## 0.0.1
 ### Added
  - Translation key referencing to json translations
  - Translation key autocompletion in templates

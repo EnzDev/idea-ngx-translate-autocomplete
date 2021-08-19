@@ -1,13 +1,13 @@
-package com.github.enzdev.ideangxtranslateautocomplete
+package fr.enzomallard.ngxtranslatetoolset
 
 import com.intellij.AbstractBundle
 import org.jetbrains.annotations.NonNls
 import org.jetbrains.annotations.PropertyKey
 
 @NonNls
-private const val BUNDLE = "messages.MyBundle"
+private const val BUNDLE = "messages.NgTranslateToolsetBundle"
 
-object MyBundle : AbstractBundle(BUNDLE) {
+object NgTranslateToolsetBundle : AbstractBundle(BUNDLE) {
 
     @Suppress("SpreadOperator")
     @JvmStatic

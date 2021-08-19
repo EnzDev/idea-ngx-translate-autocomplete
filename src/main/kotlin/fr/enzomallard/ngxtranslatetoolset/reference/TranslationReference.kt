@@ -1,7 +1,8 @@
-package com.github.enzdev.ideangxtranslateautocomplete.reference
+package fr.enzomallard.ngxtranslatetoolset.reference
 
-import com.github.enzdev.ideangxtranslateautocomplete.psi.translation.TranslationUtils
-import com.github.enzdev.ideangxtranslateautocomplete.psi.translation.toTypedResolveResult
+import fr.enzomallard.ngxtranslatetoolset.psi.translation.TranslationUtils
+import fr.enzomallard.ngxtranslatetoolset.psi.translation.toTypedResolveResult
+import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement

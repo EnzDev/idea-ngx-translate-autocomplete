@@ -1,6 +1,7 @@
-package com.github.enzdev.ideangxtranslateautocomplete.completion
+package fr.enzomallard.ngxtranslatetoolset.completion
 
-import com.github.enzdev.ideangxtranslateautocomplete.psi.translation.TranslationUtils
+import fr.enzomallard.ngxtranslatetoolset.NgTranslateToolsetBundle
+import fr.enzomallard.ngxtranslatetoolset.psi.translation.TranslationUtils
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProvider
 import com.intellij.codeInsight.completion.CompletionResultSet
@@ -27,13 +28,14 @@ class TranslationCompletionProvider : CompletionProvider<CompletionParameters>()
                             LookupElementBuilder
                                 .create(item.key)
                                 .withIcon(ColorIcon(8, Color.BLUE))
-                                .withTypeText(json.value, true)
+                                .withTailText("=${json.value}", true)
+                                .withTypeText(NgTranslateToolsetBundle.message("translation_key_leaf"), true)
                                 .withPsiElement(json)
                         else LookupElementBuilder // Intermediate key
                             .create(item.key + ".") // Append '.' to continue completion
                             .withPresentableText(item.key)
                             .withIcon(ColorIcon(8, Color.CYAN))
-                            .withTypeText("Translation partial key", true)
+                            .withTypeText(NgTranslateToolsetBundle.message("translation_key_node"), true)
                     }
                 }
 

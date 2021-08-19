@@ -1,4 +1,4 @@
-package com.github.enzdev.ideangxtranslateautocomplete.psi.translation
+package fr.enzomallard.ngxtranslatetoolset.psi.translation
 
 import com.intellij.json.JsonFileType
 import com.intellij.json.JsonUtil
@@ -13,6 +13,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.annotations.NonNls
 
 
 /**
@@ -23,6 +24,9 @@ fun List<JsonValue>.toTypedResolveResult(): Array<ResolveResult> = this
     .toTypedArray()
 
 object TranslationUtils {
+    @NonNls
+    const val TRANSLATION_KEYWORD = "translate"
+
     fun findTranslationKey(project: Project, path: List<String>?): List<JsonStringLiteral> {
         if (path == null || path.isEmpty()) return emptyList() // Don't bother filtering on files if path is empty
 

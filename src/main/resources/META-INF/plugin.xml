@@ -15,8 +15,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <psi.referenceContributor language="Angular2"
-                                  implementation="com.github.enzdev.ideangxtranslateautocomplete.referenceContributor.TranslationReferenceContributor"/>
+                                  implementation="fr.enzomallard.ngxtranslatetoolset.referenceContributor.TranslationReferenceContributor"/>
         <completion.contributor language="Angular2"
-                                implementationClass="com.github.enzdev.ideangxtranslateautocomplete.completion.TranslationReferenceCompletion"/>
+                                implementationClass="fr.enzomallard.ngxtranslatetoolset.completion.TranslationReferenceCompletion"/>
     </extensions>
 </idea-plugin>

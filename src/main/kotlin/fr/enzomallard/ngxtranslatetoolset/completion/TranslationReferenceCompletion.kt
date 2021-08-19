@@ -1,4 +1,4 @@
-package com.github.enzdev.ideangxtranslateautocomplete.completion
+package fr.enzomallard.ngxtranslatetoolset.completion
 
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionType
