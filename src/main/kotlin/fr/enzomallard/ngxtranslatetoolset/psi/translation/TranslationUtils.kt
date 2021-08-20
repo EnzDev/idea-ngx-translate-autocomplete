@@ -14,7 +14,7 @@ import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.annotations.NonNls
-
+import java.nio.file.FileSystems
 
 /**
  * Provide simple shorthand to convert the List of JsonValue into a ResolveResult
@@ -27,13 +27,16 @@ object TranslationUtils {
     @NonNls
     const val TRANSLATION_KEYWORD = "translate"
 
+    // Path element filter for Translation location
+    private val ASSETS_PATH = FileSystems.getDefault().getPath("assets")
+
     fun findTranslationKey(project: Project, path: List<String>?): List<JsonStringLiteral> {
         if (path == null || path.isEmpty()) return emptyList() // Don't bother filtering on files if path is empty
 
         // Provide better filtering on translation files
         return FileTypeIndex.getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
             .filter {
-                it.path.subSequence(project.basePath?.length ?: 0, it.path.length).contains("/assets/")
+                it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
             }.mapNotNull {
                 val jsonTranslationPath = path.listIterator()
 
@@ -56,60 +59,60 @@ object TranslationUtils {
         val results = mutableMapOf<String, List<JsonValue>>()
 
         // Provide better filtering on translation files
-        FileTypeIndex.getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
-            .filter {
-                it.path.subSequence(project.basePath?.length ?: 0, it.path.length).contains("/assets/")
-            }.onEach {
+        FileTypeIndex.getFiles(JsonFileType.INSTANCE, GlobalSearchScope.projectScope(project)).filter {
+            it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
+        }.forEach {
+            ProgressManager.checkCanceled()
+            val jsonTranslationPath = path.listIterator()
+
+            val simpleFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
+            ProgressManager.checkCanceled()
+
+            var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(simpleFile)
+            var constructedPath: String? = null
+
+            while (jsonValue != null && jsonTranslationPath.hasNext()) {
                 ProgressManager.checkCanceled()
 
-                val jsonTranslationPath = path.listIterator()
+                val fragment = jsonTranslationPath.next()
+                when {
+                    // Visitor
+                    jsonValue is JsonObject && jsonTranslationPath.hasNext() ->
+                        jsonValue = jsonValue.findProperty(fragment)?.also { prop ->
+                            constructedPath = constructedPath?.plus(".${prop.name}") ?: prop.name
+                        }?.value
 
-                val simpleFile: JsonFile? = PsiManager.getInstance(project).findFile(it) as JsonFile?
-                var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(simpleFile)
-                var constructedPath: String? = null
-
-                while (jsonValue != null && jsonTranslationPath.hasNext()) {
-                    val fragment = jsonTranslationPath.next()
-                    when {
-                        // Visitor
-                        jsonValue is JsonObject && jsonTranslationPath.hasNext() ->
-                            jsonValue = jsonValue.findProperty(fragment)?.also { prop ->
-                                constructedPath = constructedPath?.plus(".${prop.name}") ?: prop.name
-                            }?.value
-
-                        // Results
-                        jsonValue is JsonObject -> {
-                            // Find any candidate when key has been explored to a JsonObject
-                            jsonValue.propertyList
-                                .filter { prop -> prop.name.matches("$fragment.*".toRegex()) }
-                                .filter { prop -> prop.value != null }
-                                .onEach { prop ->
-                                    results.compute(
-                                        constructedPath
-                                            ?.let { "$constructedPath.${prop.name}" }
-                                            ?: prop.name
-                                    ) { _, list ->
-                                        list?.plus(prop.value!!) ?: listOf(prop.value!!)
-                                    }
-                                }
-                            break
-                        }
-                        jsonValue is JsonStringLiteral -> {
-                            // Key is matching to a translation leaf
-                            (constructedPath ?: jsonValue.name)?.let { path ->
-                                results.compute(path) { _, list ->
-                                    list?.plus(jsonValue) ?: listOf(jsonValue)
+                    // Results
+                    jsonValue is JsonObject -> {
+                        // Find any candidate when key has been explored to a JsonObject
+                        jsonValue.propertyList
+                            .filter { prop -> prop.name.matches(".*$fragment.*".toRegex()) }
+                            .filter { prop -> prop.value != null }
+                            .onEach { prop ->
+                                results.compute(
+                                    constructedPath
+                                        ?.let { "$constructedPath.${prop.name}" }
+                                        ?: prop.name
+                                ) { _, list ->
+                                    list?.plus(prop.value!!) ?: listOf(prop.value!!)
                                 }
                             }
-                            break
-                        }
-                        else ->  break // Invalid situation
-
+                        break
                     }
+                    jsonValue is JsonStringLiteral -> {
+                        // Key is matching to a translation leaf
+                        (constructedPath ?: jsonValue.name)?.let { path ->
+                            results.compute(path) { _, list ->
+                                list?.plus(jsonValue) ?: listOf(jsonValue)
+                            }
+                        }
+                        break
+                    }
+                    else -> break // Invalid situation
                 }
             }
+        }
 
         return results
     }
-
 }

@@ -1,15 +1,13 @@
 package fr.enzomallard.ngxtranslatetoolset.completion
 
-import fr.enzomallard.ngxtranslatetoolset.NgTranslateToolsetBundle
-import fr.enzomallard.ngxtranslatetoolset.psi.translation.TranslationUtils
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.CompletionProvider
-import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.util.ProcessingContext
 import com.intellij.util.ui.ColorIcon
+import fr.enzomallard.ngxtranslatetoolset.NgTranslateToolsetBundle
+import fr.enzomallard.ngxtranslatetoolset.psi.translation.TranslationUtils
 import java.awt.Color
 
 class TranslationCompletionProvider : CompletionProvider<CompletionParameters>() {
