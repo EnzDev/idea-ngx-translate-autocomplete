@@ -6,7 +6,6 @@ import com.intellij.lang.javascript.psi.JSLiteralExpression
 import com.intellij.patterns.PlatformPatterns
 import org.angular2.lang.expr.psi.Angular2Interpolation
 
-
 class TranslationReferenceCompletion : CompletionContributor() {
     init {
         extend(

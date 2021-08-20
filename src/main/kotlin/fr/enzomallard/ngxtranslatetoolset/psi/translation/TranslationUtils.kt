@@ -26,32 +26,28 @@ fun List<JsonValue>.toTypedResolveResult(): Array<ResolveResult> = this
 object TranslationUtils {
     @NonNls
     const val TRANSLATION_KEYWORD = "translate"
+    const val ICON_SIZE = 8
 
     // Path element filter for Translation location
     private val ASSETS_PATH = FileSystems.getDefault().getPath("assets")
 
-    fun findTranslationKey(project: Project, path: List<String>?): List<JsonStringLiteral> {
-        if (path == null || path.isEmpty()) return emptyList() // Don't bother filtering on files if path is empty
+    fun findTranslationKey(project: Project, path: List<String>?) =
+        // Don't bother filtering on files if path is empty
+        if (path == null || path.isEmpty()) emptyList<JsonStringLiteral>()
+        else getJsonAssets(project).mapNotNull {
+            val jsonTranslationPath = path.listIterator()
 
-        // Provide better filtering on translation files
-        return FileTypeIndex.getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
-            .filter {
-                it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
-            }.mapNotNull {
-                val jsonTranslationPath = path.listIterator()
+            val jsonFile: JsonFile? = PsiManager.getInstance(project).findFile(it) as JsonFile?
+            var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(jsonFile)
 
-                val simpleFile: JsonFile? = PsiManager.getInstance(project).findFile(it) as JsonFile?
-                var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(simpleFile)
-
-                while (jsonValue != null && jsonValue is JsonObject && jsonTranslationPath.hasNext()) {
-                    jsonValue = jsonValue
-                        .findProperty(jsonTranslationPath.next())
-                        ?.value
-                }
-
-                if (!jsonTranslationPath.hasNext() && jsonValue is JsonStringLiteral) jsonValue else null
+            while (jsonValue != null && jsonValue is JsonObject && jsonTranslationPath.hasNext()) {
+                jsonValue = jsonValue
+                    .findProperty(jsonTranslationPath.next())
+                    ?.value
             }
-    }
+
+            if (!jsonTranslationPath.hasNext() && jsonValue is JsonStringLiteral) jsonValue else null
+        }
 
     fun findTranslationPartialKey(project: Project, path: List<String>?): Map<String, List<JsonValue>> {
         if (path == null || path.isEmpty()) return emptyMap() // Don't bother filtering on files if path is empty
@@ -59,16 +55,14 @@ object TranslationUtils {
         val results = mutableMapOf<String, List<JsonValue>>()
 
         // Provide better filtering on translation files
-        FileTypeIndex.getFiles(JsonFileType.INSTANCE, GlobalSearchScope.projectScope(project)).filter {
-            it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
-        }.forEach {
+        getJsonAssets(project).forEach {
             ProgressManager.checkCanceled()
             val jsonTranslationPath = path.listIterator()
 
-            val simpleFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
+            val jsonFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
             ProgressManager.checkCanceled()
 
-            var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(simpleFile)
+            var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(jsonFile)
             var constructedPath: String? = null
 
             while (jsonValue != null && jsonTranslationPath.hasNext()) {
@@ -115,4 +109,11 @@ object TranslationUtils {
 
         return results
     }
+
+    // Provide better filtering on translation files
+    private fun getJsonAssets(project: Project) = FileTypeIndex
+        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
+        .filter {
+            it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
+        }
 }

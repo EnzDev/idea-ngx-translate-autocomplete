@@ -1,6 +1,8 @@
 package fr.enzomallard.ngxtranslatetoolset.completion
 
-import com.intellij.codeInsight.completion.*
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.CompletionProvider
+import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.lang.javascript.psi.JSLiteralExpression
@@ -22,17 +24,17 @@ class TranslationCompletionProvider : CompletionProvider<CompletionParameters>()
                 .findTranslationPartialKey(it.project, partiallyProvidedPath.split('.'))
                 .flatMap { item ->
                     item.value.map { json ->
-                        if (json is JsonStringLiteral) // End key
+                        if (json is JsonStringLiteral) { // End key
                             LookupElementBuilder
                                 .create(item.key)
-                                .withIcon(ColorIcon(8, Color.BLUE))
+                                .withIcon(ColorIcon(TranslationUtils.ICON_SIZE, Color.BLUE))
                                 .withTailText("=${json.value}", true)
                                 .withTypeText(NgTranslateToolsetBundle.message("translation_key_leaf"), true)
                                 .withPsiElement(json)
-                        else LookupElementBuilder // Intermediate key
+                        } else LookupElementBuilder // Intermediate key
                             .create(item.key + ".") // Append '.' to continue completion
                             .withPresentableText(item.key)
-                            .withIcon(ColorIcon(8, Color.CYAN))
+                            .withIcon(ColorIcon(TranslationUtils.ICON_SIZE, Color.CYAN))
                             .withTypeText(NgTranslateToolsetBundle.message("translation_key_node"), true)
                     }
                 }
