@@ -49,6 +49,31 @@ object TranslationUtils {
             if (!jsonTranslationPath.hasNext() && jsonValue is JsonStringLiteral) jsonValue else null
         }
 
+    private fun recurseKeysWithFilter(
+        value: JsonValue,
+        lookupKey: List<String>,
+        keys: List<String> = listOf()
+    ): Map<String, JsonValue> {
+        val localMap = if (keys.isEmpty()) { // Prevent returning root
+            mapOf()
+        } else mapOf(keys.joinToString(".") to value)
+
+        return when (value) {
+            is JsonObject ->
+                value.propertyList
+                .filter {
+                    (lookupKey.isEmpty() || it.name.matches(".*${lookupKey.first()}.*".toRegex()))
+                }.map { prop ->
+                    ProgressManager.checkCanceled() // Check cancel before continuing recursion
+                    recurseKeysWithFilter(prop.value!!, lookupKey.drop(1), keys + prop.name)
+                }.fold(localMap) { acc, map -> acc + map } // Iterate and filter key
+            is JsonStringLiteral -> mapOf(keys.joinToString(".") to value)
+            else -> throw IllegalArgumentException(
+                "JsonValue should be JsonObject or JsonStringLiteral in translation files"
+            )
+        }
+    }
+
     fun findTranslationPartialKey(project: Project, path: List<String>?): Map<String, List<JsonValue>> {
         if (path == null || path.isEmpty()) return emptyMap() // Don't bother filtering on files if path is empty
 
@@ -57,52 +82,15 @@ object TranslationUtils {
         // Provide better filtering on translation files
         getJsonAssets(project).forEach {
             ProgressManager.checkCanceled()
-            val jsonTranslationPath = path.listIterator()
-
             val jsonFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
             ProgressManager.checkCanceled()
 
-            var jsonValue: JsonValue? = JsonUtil.getTopLevelObject(jsonFile)
-            var constructedPath: String? = null
+            val jsonValue: JsonValue? = JsonUtil.getTopLevelObject(jsonFile)
 
-            while (jsonValue != null && jsonTranslationPath.hasNext()) {
-                ProgressManager.checkCanceled()
-
-                val fragment = jsonTranslationPath.next()
-                when {
-                    // Visitor
-                    jsonValue is JsonObject && jsonTranslationPath.hasNext() ->
-                        jsonValue = jsonValue.findProperty(fragment)?.also { prop ->
-                            constructedPath = constructedPath?.plus(".${prop.name}") ?: prop.name
-                        }?.value
-
-                    // Results
-                    jsonValue is JsonObject -> {
-                        // Find any candidate when key has been explored to a JsonObject
-                        jsonValue.propertyList
-                            .filter { prop -> prop.name.matches(".*$fragment.*".toRegex()) }
-                            .filter { prop -> prop.value != null }
-                            .onEach { prop ->
-                                results.compute(
-                                    constructedPath
-                                        ?.let { "$constructedPath.${prop.name}" }
-                                        ?: prop.name
-                                ) { _, list ->
-                                    list?.plus(prop.value!!) ?: listOf(prop.value!!)
-                                }
-                            }
-                        break
-                    }
-                    jsonValue is JsonStringLiteral -> {
-                        // Key is matching to a translation leaf
-                        (constructedPath ?: jsonValue.name)?.let { path ->
-                            results.compute(path) { _, list ->
-                                list?.plus(jsonValue) ?: listOf(jsonValue)
-                            }
-                        }
-                        break
-                    }
-                    else -> break // Invalid situation
+            if (jsonValue != null) {
+                val keysForFile = recurseKeysWithFilter(jsonValue, path)
+                keysForFile.forEach { (k, v) ->
+                    results.compute(k) { _, l -> if (l == null) listOf(v) else l + v }
                 }
             }
         }
