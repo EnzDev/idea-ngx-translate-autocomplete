@@ -61,12 +61,12 @@ object TranslationUtils {
         return when (value) {
             is JsonObject ->
                 value.propertyList
-                .filter {
-                    (lookupKey.isEmpty() || it.name.matches(".*${lookupKey.first()}.*".toRegex()))
-                }.map { prop ->
-                    ProgressManager.checkCanceled() // Check cancel before continuing recursion
-                    recurseKeysWithFilter(prop.value!!, lookupKey.drop(1), keys + prop.name)
-                }.fold(localMap) { acc, map -> acc + map } // Iterate and filter key
+                    .filter {
+                        lookupKey.isEmpty() || it.name.matches(".*${lookupKey.first()}.*".toRegex())
+                    }.map { prop ->
+                        ProgressManager.checkCanceled() // Check cancel before continuing recursion
+                        recurseKeysWithFilter(prop.value!!, lookupKey.drop(1), keys + prop.name)
+                    }.fold(localMap) { acc, map -> acc + map } // Iterate and filter key
             is JsonStringLiteral -> mapOf(keys.joinToString(".") to value)
             else -> throw IllegalArgumentException(
                 "JsonValue should be JsonObject or JsonStringLiteral in translation files"
