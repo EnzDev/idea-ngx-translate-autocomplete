@@ -3,6 +3,9 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+### Added
+- Translation configuration, specific i18n folder & translation file used to present key values
+
 ## [0.0.2]
 ### Added
 - Translation key autocompletion supports partial matches

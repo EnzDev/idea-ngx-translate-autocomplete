@@ -8,13 +8,15 @@ import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.json.psi.JsonValue
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiManager
 import com.intellij.psi.ResolveResult
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
+import fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfiguration
 import org.jetbrains.annotations.NonNls
-import java.nio.file.FileSystems
+import kotlin.io.path.Path
 
 /**
  * Provide simple shorthand to convert the List of JsonValue into a ResolveResult
@@ -28,8 +30,8 @@ object TranslationUtils {
     const val TRANSLATION_KEYWORD = "translate"
     const val ICON_SIZE = 8
 
-    // Path element filter for Translation location
-    private val ASSETS_PATH = FileSystems.getDefault().getPath("assets")
+    // Path element filter for default Translation location
+    private val ASSETS_PATH = Path("assets")
 
     fun findTranslationKey(project: Project, path: List<String>?) =
         // Don't bother filtering on files if path is empty
@@ -74,15 +76,16 @@ object TranslationUtils {
         }
     }
 
-    fun findTranslationPartialKey(project: Project, path: List<String>?): Map<String, List<JsonValue>> {
+    fun findTranslationPartialKey(project: Project, path: List<String>?): Map<String, List<Pair<JsonValue, Boolean>>> {
         if (path == null || path.isEmpty()) return emptyMap() // Don't bother filtering on files if path is empty
 
-        val results = mutableMapOf<String, List<JsonValue>>()
+        val results = mutableMapOf<String, List<Pair<JsonValue, Boolean>>>()
 
         // Provide better filtering on translation files
         getJsonAssets(project).forEach {
             ProgressManager.checkCanceled()
             val jsonFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
+            val isMainFile = isSelectedFile(it, project)
             ProgressManager.checkCanceled()
 
             val jsonValue: JsonValue? = JsonUtil.getTopLevelObject(jsonFile)
@@ -90,7 +93,11 @@ object TranslationUtils {
             if (jsonValue != null) {
                 val keysForFile = recurseKeysWithFilter(jsonValue, path)
                 keysForFile.forEach { (k, v) ->
-                    results.compute(k) { _, l -> if (l == null) listOf(v) else l + v }
+                    results.compute(k) { _, l ->
+                        if (l == null) listOf(
+                            v to isMainFile
+                        ) else l + (v to isMainFile)
+                    }
                 }
             }
         }
@@ -98,10 +105,26 @@ object TranslationUtils {
         return results
     }
 
+    private fun isSelectedFile(file: VirtualFile, project: Project) =
+        file.toNioPath() == Path(NgTranslateToolsetConfiguration.getJsonTranslationFile(project))
+
+
+    private fun getJsonAssets(project: Project) =
+        if (NgTranslateToolsetConfiguration.getJsonTranslationPath(project).isNotBlank())
+            getJsonAssetsByPath(project, NgTranslateToolsetConfiguration.getJsonTranslationPath(project))
+        else
+            getJsonAssetsByAssetsFilter(project)
+
     // Provide better filtering on translation files
-    private fun getJsonAssets(project: Project) = FileTypeIndex
+    private fun getJsonAssetsByAssetsFilter(project: Project) = FileTypeIndex
         .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
         .filter {
             it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
+        }
+
+    private fun getJsonAssetsByPath(project: Project, path: String) = FileTypeIndex
+        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
+        .filter {
+            it.toNioPath().startsWith(Path(path)) // Filter JSON in assets folder
         }
 }

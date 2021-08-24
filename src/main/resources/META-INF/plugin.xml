@@ -18,5 +18,11 @@
                                   implementation="fr.enzomallard.ngxtranslatetoolset.referenceContributor.TranslationReferenceContributor"/>
         <completion.contributor language="Angular2"
                                 implementationClass="fr.enzomallard.ngxtranslatetoolset.completion.TranslationReferenceCompletion"/>
+
+
+        <projectConfigurable parentId="tools" instance="fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfigurable"
+                             id="fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfigurable" displayName="NgTranslate Toolset"
+                             nonDefaultProject="true"/>
+        <projectService serviceImplementation="fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfiguration"/>
     </extensions>
 </idea-plugin>

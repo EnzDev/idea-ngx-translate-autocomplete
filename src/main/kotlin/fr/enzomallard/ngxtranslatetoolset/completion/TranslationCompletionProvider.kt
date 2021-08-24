@@ -23,21 +23,22 @@ class TranslationCompletionProvider : CompletionProvider<CompletionParameters>()
             val candidates = TranslationUtils
                 .findTranslationPartialKey(it.project, partiallyProvidedPath.split('.'))
                 .flatMap { item ->
-                    item.value.map { json ->
+                    item.value.map { (json, score) ->
                         if (json is JsonStringLiteral) { // End key
                             LookupElementBuilder
                                 .create(item.key)
                                 .withIcon(ColorIcon(TranslationUtils.ICON_SIZE, Color.BLUE))
                                 .withTailText("=${json.value}", true)
-                                .withTypeText(NgTranslateToolsetBundle.message("translation_key_leaf"), true)
-                                .withPsiElement(json)
+                                .withTypeText(NgTranslateToolsetBundle.message("ui.translation_key_leaf"), true)
+                                .withPsiElement(json) to score
                         } else LookupElementBuilder // Intermediate key
                             .create(item.key + ".") // Append '.' to continue completion
                             .withPresentableText(item.key)
                             .withIcon(ColorIcon(TranslationUtils.ICON_SIZE, Color.CYAN))
-                            .withTypeText(NgTranslateToolsetBundle.message("translation_key_node"), true)
+                            .withTypeText(NgTranslateToolsetBundle.message("ui.translation_key_node"), true) to score
                     }
-                }
+                }.sortedByDescending { (_, isMainFile) -> isMainFile }
+                .map { (lookupElement, _) -> lookupElement }
 
             result.withPrefixMatcher(partiallyProvidedPath).addAllElements(candidates)
         }
