@@ -9,6 +9,7 @@ import com.intellij.json.psi.JsonValue
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.psi.PsiElementResolveResult
 import com.intellij.psi.PsiManager
 import com.intellij.psi.ResolveResult
@@ -114,35 +115,52 @@ object TranslationUtils {
      * @param file The file to check
      * @return true if the virtual file is the translation file stored in the project configuration
      */
-    private fun isSelectedFile(project: Project, file: VirtualFile) =
-        file.toNioPath() == Path(NgTranslateToolsetConfiguration.getJsonTranslationFile(project))
+    private fun isSelectedFile(project: Project, file: VirtualFile) = file.runCatching {
+        toNioPath() == Path(NgTranslateToolsetConfiguration.getJsonTranslationFile(project))
+    }.getOrElse { false }
 
     /**
      * Retrieve JSON files either stored in the path defined in
      * the plugin configuration or in the default assets folder
      */
     private fun getJsonAssets(project: Project): List<VirtualFile> {
-        return if (NgTranslateToolsetConfiguration.getJsonTranslationPath(project).isNotBlank()) {
-            getJsonAssetsByPath(project, NgTranslateToolsetConfiguration.getJsonTranslationPath(project))
-        } else getJsonAssetsByAssetsFilter(project)
+        val jsonFiles = mutableListOf<VirtualFile>()
+
+        // Try to add translations from provided path
+        if (NgTranslateToolsetConfiguration.getJsonTranslationPath(project).isNotBlank()) {
+            jsonFiles += getJsonAssetsByPath(NgTranslateToolsetConfiguration.getJsonTranslationPath(project))
+        }
+
+        // Fallback if no translation file exists in provided path or provided patch not configured
+        if (jsonFiles.isEmpty()) jsonFiles += getJsonAssetsByAssetsFilter(project)
+
+        return jsonFiles
     }
 
     /**
      * Retrieve JSON files stored in the project assets
      */
     private fun getJsonAssetsByAssetsFilter(project: Project) = FileTypeIndex
-        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
+        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.projectScope(project))
         .filter {
-            it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
+            it.runCatching { // Catch Nio exceptions (invalid file path, e.g. file inside jar)
+                toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
+            }.getOrDefault(false)
         }
 
     /**
      * Retrieve JSON files stored at path
      * @param path Path where json translations are stored
      */
-    private fun getJsonAssetsByPath(project: Project, path: String) = FileTypeIndex
-        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
-        .filter {
-            it.toNioPath().startsWith(Path(path)) // Filter JSON in assets folder
-        }
+    private fun getJsonAssetsByPath(path: String) = VirtualFileManager
+        .getInstance()
+        .runCatching {
+            findFileByNioPath(Path(path)).takeIf {
+                // Exclude if provided path is not a directory
+                it?.isDirectory ?: false
+            }
+        }.getOrNull()
+        ?.children
+        ?.filter { it.fileType == JsonFileType.INSTANCE }
+        ?: listOf()
 }

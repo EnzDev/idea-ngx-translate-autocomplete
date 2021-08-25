@@ -3,6 +3,10 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+## [0.1.0]
+### Added
+- Release stable version
+
 ## [0.0.3]
 ### Added
 - Translation configuration, specific i18n folder & translation file used to present key values
