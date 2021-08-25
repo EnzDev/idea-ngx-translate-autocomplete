@@ -14,31 +14,34 @@ import java.awt.Component
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class NgTranslateToolsetConfigurable(val project: Project) : SearchableConfigurable {
+class NgTranslateToolsetConfigurable(private val project: Project) : SearchableConfigurable {
     private lateinit var i18nField: TextFieldWithBrowseButton
     private lateinit var langField: TextFieldWithBrowseButton
 
-    override fun createComponent() = JPanel(BorderLayout(10, 5)).apply {
-        add(JPanel(VerticalFlowLayout(4, 4)).apply {
-            i18nField = createI18PathInput()
-            langField = createLangInput()
+    override fun createComponent() = JPanel(BorderLayout(MAIN_PANEL_HGAP, MAIN_PANEL_VGAP)).apply {
+        add(
+            JPanel(VerticalFlowLayout(CONTENT_PANEL_GAP, CONTENT_PANEL_GAP)).apply {
+                i18nField = createI18PathInput()
+                langField = createLangInput()
 
-            add(
-                wrapLabel(
-                    i18nField,
-                    NgTranslateToolsetBundle.message("configuration.label.translation_folder")
+                add(
+                    wrapLabel(
+                        i18nField,
+                        NgTranslateToolsetBundle.message("configuration.label.translation_folder")
+                    )
                 )
-            )
-            add(
-                wrapLabel(
-                    langField,
-                    NgTranslateToolsetBundle.message("configuration.label.default_translation")
+                add(
+                    wrapLabel(
+                        langField,
+                        NgTranslateToolsetBundle.message("configuration.label.default_translation")
+                    )
                 )
-            )
-        }, BorderLayout.NORTH)
+            },
+            BorderLayout.NORTH
+        )
     }
 
-    private fun wrapLabel(field: Component, label: String) = JPanel(BorderLayout(5, 1)).apply {
+    private fun wrapLabel(field: Component, label: String) = JPanel(BorderLayout(LABEL_HGAP, LABEL_VGAP)).apply {
         add(JLabel(label), BorderLayout.WEST)
         add(field, BorderLayout.CENTER)
     }
@@ -51,7 +54,8 @@ class NgTranslateToolsetConfigurable(val project: Project) : SearchableConfigura
             project,
             object : FileChooserDescriptor(true, false, false, false, false, false) {
                 override fun isFileSelectable(file: VirtualFile) = isJsonFile(file)
-            })
+            }
+        )
     }
 
     private fun createI18PathInput() = TextFieldWithBrowseButton().apply {
@@ -61,14 +65,15 @@ class NgTranslateToolsetConfigurable(val project: Project) : SearchableConfigura
             project,
             object : FileChooserDescriptor(false, true, false, false, false, false) {
                 override fun isFileSelectable(file: VirtualFile) = isJsonFolder(file)
-            })
+            }
+        )
     }
 
     override fun isModified(): Boolean {
         val configuration = NgTranslateToolsetConfiguration.getInstance(project)
-        if (configuration.lang != FileUtil.toSystemIndependentName(langField.text)) return true
-        if (configuration.i18nPath != FileUtil.toSystemIndependentName(i18nField.text)) return true
-        return false
+        val modifiedLang = configuration.lang != FileUtil.toSystemIndependentName(langField.text)
+        val modifiedI18n = configuration.i18nPath != FileUtil.toSystemIndependentName(i18nField.text)
+        return modifiedLang || modifiedI18n
     }
 
     override fun apply() = NgTranslateToolsetConfiguration
@@ -98,5 +103,13 @@ class NgTranslateToolsetConfigurable(val project: Project) : SearchableConfigura
             file.isDirectory && file.children.all { it.fileType === JsonFileType.INSTANCE }
 
         private fun isJsonFile(file: VirtualFile) = file.fileType === JsonFileType.INSTANCE
+
+        private const val MAIN_PANEL_HGAP = 10
+        private const val MAIN_PANEL_VGAP = 5
+
+        private const val CONTENT_PANEL_GAP = 4
+
+        private const val LABEL_HGAP = 5
+        private const val LABEL_VGAP = 1
     }
 }

@@ -76,6 +76,10 @@ object TranslationUtils {
         }
     }
 
+    /**
+     * Find all translation keys matching with currently provided path
+     * @param path The list of components in the translation key, they can be partial (e.g. CAT.K for MY_CAT.MY_KEY)
+     */
     fun findTranslationPartialKey(project: Project, path: List<String>?): Map<String, List<Pair<JsonValue, Boolean>>> {
         if (path == null || path.isEmpty()) return emptyMap() // Don't bother filtering on files if path is empty
 
@@ -85,7 +89,7 @@ object TranslationUtils {
         getJsonAssets(project).forEach {
             ProgressManager.checkCanceled()
             val jsonFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
-            val isMainFile = isSelectedFile(it, project)
+            val isMainFile = isSelectedFile(project, it)
             ProgressManager.checkCanceled()
 
             val jsonValue: JsonValue? = JsonUtil.getTopLevelObject(jsonFile)
@@ -105,23 +109,37 @@ object TranslationUtils {
         return results
     }
 
-    private fun isSelectedFile(file: VirtualFile, project: Project) =
+    /**
+     * Check if a file is corresponding to the configured default translation file
+     * @param file The file to check
+     * @return true if the virtual file is the translation file stored in the project configuration
+     */
+    private fun isSelectedFile(project: Project, file: VirtualFile) =
         file.toNioPath() == Path(NgTranslateToolsetConfiguration.getJsonTranslationFile(project))
 
-
-    private fun getJsonAssets(project: Project) =
-        if (NgTranslateToolsetConfiguration.getJsonTranslationPath(project).isNotBlank())
+    /**
+     * Retrieve JSON files either stored in the path defined in
+     * the plugin configuration or in the default assets folder
+     */
+    private fun getJsonAssets(project: Project): List<VirtualFile> {
+        return if (NgTranslateToolsetConfiguration.getJsonTranslationPath(project).isNotBlank()) {
             getJsonAssetsByPath(project, NgTranslateToolsetConfiguration.getJsonTranslationPath(project))
-        else
-            getJsonAssetsByAssetsFilter(project)
+        } else getJsonAssetsByAssetsFilter(project)
+    }
 
-    // Provide better filtering on translation files
+    /**
+     * Retrieve JSON files stored in the project assets
+     */
     private fun getJsonAssetsByAssetsFilter(project: Project) = FileTypeIndex
         .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
         .filter {
             it.toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder
         }
 
+    /**
+     * Retrieve JSON files stored at path
+     * @param path Path where json translations are stored
+     */
     private fun getJsonAssetsByPath(project: Project, path: String) = FileTypeIndex
         .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.allScope(project))
         .filter {
