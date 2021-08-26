@@ -15,8 +15,13 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <psi.referenceContributor language="Angular2"
-                                  implementation="fr.enzomallard.ngxtranslatetoolset.referenceContributor.TranslationReferenceContributor"/>
+                                  implementation="fr.enzomallard.ngxtranslatetoolset.reference.TranslationReferenceContributor"/>
+        <psi.referenceContributor language="TypeScript"
+                                  implementation="fr.enzomallard.ngxtranslatetoolset.reference.TranslationReferenceContributor"/>
+
         <completion.contributor language="Angular2"
+                                implementationClass="fr.enzomallard.ngxtranslatetoolset.completion.TranslationReferenceCompletion"/>
+        <completion.contributor language="TypeScript"
                                 implementationClass="fr.enzomallard.ngxtranslatetoolset.completion.TranslationReferenceCompletion"/>
 
 

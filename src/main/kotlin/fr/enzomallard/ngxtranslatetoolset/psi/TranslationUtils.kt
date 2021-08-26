@@ -1,4 +1,4 @@
-package fr.enzomallard.ngxtranslatetoolset.psi.translation
+package fr.enzomallard.ngxtranslatetoolset.psi
 
 import com.intellij.json.JsonFileType
 import com.intellij.json.JsonUtil
@@ -6,6 +6,7 @@ import com.intellij.json.psi.JsonFile
 import com.intellij.json.psi.JsonObject
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.json.psi.JsonValue
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -29,15 +30,19 @@ fun List<JsonValue>.toTypedResolveResult(): Array<ResolveResult> = this
 object TranslationUtils {
     @NonNls
     const val TRANSLATION_KEYWORD = "translate"
+
+    @NonNls
+    const val INSTANT_KEYWORD = "instant"
+
     const val ICON_SIZE = 8
 
     // Path element filter for default Translation location
     private val ASSETS_PATH = Path("assets")
 
-    fun findTranslationKey(project: Project, path: List<String>?) =
+    fun findTranslationKey(module: Module?, project: Project, path: List<String>?) =
         // Don't bother filtering on files if path is empty
-        if (path == null || path.isEmpty()) emptyList<JsonStringLiteral>()
-        else getJsonAssets(project).mapNotNull {
+        if (module == null || path == null || path.isEmpty()) emptyList<JsonStringLiteral>()
+        else getJsonAssets(module, project).mapNotNull {
             val jsonTranslationPath = path.listIterator()
 
             val jsonFile: JsonFile? = PsiManager.getInstance(project).findFile(it) as JsonFile?
@@ -81,13 +86,18 @@ object TranslationUtils {
      * Find all translation keys matching with currently provided path
      * @param path The list of components in the translation key, they can be partial (e.g. CAT.K for MY_CAT.MY_KEY)
      */
-    fun findTranslationPartialKey(project: Project, path: List<String>?): Map<String, List<Pair<JsonValue, Boolean>>> {
-        if (path == null || path.isEmpty()) return emptyMap() // Don't bother filtering on files if path is empty
+    fun findTranslationPartialKey(
+        module: Module?,
+        project: Project,
+        path: List<String>?
+    ): Map<String, List<Pair<JsonValue, Boolean>>> {
+        // Don't bother filtering on files if path is empty or module is absent
+        if (path == null || module == null || path.isEmpty()) return emptyMap()
 
         val results = mutableMapOf<String, List<Pair<JsonValue, Boolean>>>()
 
         // Provide better filtering on translation files
-        getJsonAssets(project).forEach {
+        getJsonAssets(module, project).forEach {
             ProgressManager.checkCanceled()
             val jsonFile: JsonFile = PsiManager.getInstance(project).findFile(it) as JsonFile? ?: return@forEach
             val isMainFile = isSelectedFile(project, it)
@@ -123,7 +133,7 @@ object TranslationUtils {
      * Retrieve JSON files either stored in the path defined in
      * the plugin configuration or in the default assets folder
      */
-    private fun getJsonAssets(project: Project): List<VirtualFile> {
+    private fun getJsonAssets(module: Module, project: Project): List<VirtualFile> {
         val jsonFiles = mutableListOf<VirtualFile>()
 
         // Try to add translations from provided path
@@ -132,7 +142,7 @@ object TranslationUtils {
         }
 
         // Fallback if no translation file exists in provided path or provided patch not configured
-        if (jsonFiles.isEmpty()) jsonFiles += getJsonAssetsByAssetsFilter(project)
+        if (jsonFiles.isEmpty()) jsonFiles += getJsonAssetsByAssetsFilter(module)
 
         return jsonFiles
     }
@@ -140,8 +150,8 @@ object TranslationUtils {
     /**
      * Retrieve JSON files stored in the project assets
      */
-    private fun getJsonAssetsByAssetsFilter(project: Project) = FileTypeIndex
-        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.projectScope(project))
+    private fun getJsonAssetsByAssetsFilter(module: Module) = FileTypeIndex
+        .getFiles(JsonFileType.INSTANCE, GlobalSearchScope.moduleScope(module))
         .filter {
             it.runCatching { // Catch Nio exceptions (invalid file path, e.g. file inside jar)
                 toNioPath().contains(ASSETS_PATH) // Filter JSON in assets folder

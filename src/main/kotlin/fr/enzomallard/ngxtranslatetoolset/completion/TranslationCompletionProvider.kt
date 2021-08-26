@@ -6,10 +6,11 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.json.psi.JsonStringLiteral
 import com.intellij.lang.javascript.psi.JSLiteralExpression
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.util.ProcessingContext
 import com.intellij.util.ui.ColorIcon
 import fr.enzomallard.ngxtranslatetoolset.NgTranslateToolsetBundle
-import fr.enzomallard.ngxtranslatetoolset.psi.translation.TranslationUtils
+import fr.enzomallard.ngxtranslatetoolset.psi.TranslationUtils
 import java.awt.Color
 
 class TranslationCompletionProvider : CompletionProvider<CompletionParameters>() {
@@ -18,10 +19,14 @@ class TranslationCompletionProvider : CompletionProvider<CompletionParameters>()
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        (parameters.originalPosition?.parent as JSLiteralExpression?)?.let { it ->
+        (parameters.originalPosition?.parent as? JSLiteralExpression)?.let { it ->
             val partiallyProvidedPath = it.stringValue ?: return
             val candidates = TranslationUtils
-                .findTranslationPartialKey(it.project, partiallyProvidedPath.split('.'))
+                .findTranslationPartialKey(
+                    ModuleUtilCore.findModuleForPsiElement(it),
+                    it.project,
+                    partiallyProvidedPath.split('.')
+                )
                 .flatMap { item ->
                     item.value.map { (json, score) ->
                         if (json is JsonStringLiteral) { // End key
