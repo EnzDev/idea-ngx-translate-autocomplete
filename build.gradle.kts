@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.18.0")
-    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.21")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
 }
 
 // Configure gradle-intellij-plugin plugin.
