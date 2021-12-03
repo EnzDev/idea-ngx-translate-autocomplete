@@ -1,1 +1,1 @@
-rootProject.name = "NgTranslate Toolset"
+rootProject.name = "idea-ngx-translate-autocomplete"
