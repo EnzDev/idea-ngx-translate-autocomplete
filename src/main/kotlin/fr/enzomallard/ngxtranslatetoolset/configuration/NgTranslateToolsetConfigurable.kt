@@ -52,9 +52,8 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
             NgTranslateToolsetBundle.message("configuration.modal.title.default_translation"),
             NgTranslateToolsetBundle.message("configuration.modal.description.default_translation"),
             project,
-            object : FileChooserDescriptor(true, false, false, false, false, false) {
-                override fun isFileSelectable(file: VirtualFile) = isJsonFile(file)
-            }
+            FileChooserDescriptor(true, false, false, false, false, false)
+                .withFileFilter(::isJsonFile)
         )
     }
 
@@ -63,9 +62,8 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
             NgTranslateToolsetBundle.message("configuration.modal.title.translation_folder"),
             NgTranslateToolsetBundle.message("configuration.modal.description.translation_folder"),
             project,
-            object : FileChooserDescriptor(false, true, false, false, false, false) {
-                override fun isFileSelectable(file: VirtualFile) = isJsonFolder(file)
-            }
+            FileChooserDescriptor(false, true, false, false, false, false)
+                .withFileFilter(::isJsonFolder)
         )
     }
 
