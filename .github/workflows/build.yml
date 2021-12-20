@@ -102,7 +102,9 @@ jobs:
 
       # Run Qodana inspections
       - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v2.1-eap
+        uses: JetBrains/qodana-action@v4.1.0  # you can use @main if you want to use the latest version
+        with:
+          linter: jetbrains/qodana-js:2021.3  # Docker image full name with a tag
 
       # Collect Qodana Result
       - name: Collect Qodana Result
