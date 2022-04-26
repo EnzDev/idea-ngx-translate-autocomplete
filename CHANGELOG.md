@@ -3,6 +3,11 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+## [0.1.2]
+### Fixed
+- Bump compatibility to Intellij 2022.1
+
+## [0.1.1]
 ### Fixed
 - Fixed for Intellij 2021.3 
 
