@@ -1,7 +1,6 @@
 package fr.enzomallard.ngxtranslatetoolset.configuration
 
 import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.StoragePathMacros
@@ -38,8 +37,8 @@ class NgTranslateToolsetConfiguration : PersistentStateComponent<Element> {
         const val ELEMENT_LANG = "lang"
         const val ELEMENT_I18N_PATH = "i18nPath"
 
-        fun getInstance(project: Project): NgTranslateToolsetConfiguration = ServiceManager
-            .getService(project, NgTranslateToolsetConfiguration::class.java)
+        fun getInstance(project: Project): NgTranslateToolsetConfiguration = project
+            .getService(NgTranslateToolsetConfiguration::class.java)
 
         fun getJsonTranslationPath(project: Project) = getInstance(project)
             .i18nPath
