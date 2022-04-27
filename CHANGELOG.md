@@ -3,13 +3,17 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+
+## [0.1.2]
+Updated for IntelliJ 221
+
 ## [0.1.2]
 ### Fixed
 - Bump compatibility to Intellij 2022.1
 
 ## [0.1.1]
 ### Fixed
-- Fixed for Intellij 2021.3 
+- Fixed for Intellij 2021.3
 
 ## [0.1.0]
 ### Added
@@ -23,7 +27,6 @@
 ### Added
 - Translation key autocompletion supports partial matches
   (ex. for `ABC_DEF.HIJKL_MNOP` autocompletion works with `ABC_DEF.MNOP`)
-
 
 ## 0.0.1
 ### Added
