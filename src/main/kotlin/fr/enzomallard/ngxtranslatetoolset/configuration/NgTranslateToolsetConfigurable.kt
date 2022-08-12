@@ -98,7 +98,7 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
 
     companion object {
         private fun isJsonFolder(file: VirtualFile) =
-            file.isDirectory && file.children.all { it.fileType === JsonFileType.INSTANCE }
+            file.isDirectory && file.children.any { it.fileType === JsonFileType.INSTANCE }
 
         private fun isJsonFile(file: VirtualFile) = file.fileType === JsonFileType.INSTANCE
 

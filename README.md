@@ -7,6 +7,11 @@
 <!-- Plugin description -->
 NgTranslate Toolset extends Angular language support for the NgxTranslate library.  
 It provides translation key referencing and autocompletion in your angular templates.
+
+Plugins look in the resources directories by default, you can
+configure the plugin in `Settings...` > `Tools` > `NgTranslate Toolset`.  
+There, you can define where you store your translations and
+you favorite language to show in autocompletion.
 <!-- Plugin description end -->
 
 ## Project ToDo list
