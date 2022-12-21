@@ -8,7 +8,7 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.7.21"
+    id("org.jetbrains.kotlin.jvm") version "1.7.22"
     // Gradle IntelliJ Plugin
     id("org.jetbrains.intellij") version "1.11.0"
     // Gradle Changelog Plugin
@@ -28,11 +28,10 @@ repositories {
 }
 
 dependencies {
-    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.7.22")
     implementation(kotlin("stdlib-jdk8"))
 }
 
-// Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
 // Set the JVM language level used to build project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
 kotlin {
     jvmToolchain(17)
@@ -50,6 +49,7 @@ intellij {
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
+    version.set(properties("pluginVersion"))
     groups.set(emptyList())
     repositoryUrl.set(properties("pluginRepositoryUrl"))
 }
@@ -67,6 +67,17 @@ kover.xmlReport {
 }
 
 tasks {
+    // Set the JVM compatibility versions
+    properties("javaVersion").let {
+        withType<JavaCompile> {
+            sourceCompatibility = it
+            targetCompatibility = it
+        }
+        withType<KotlinCompile> {
+            kotlinOptions.jvmTarget = it
+        }
+    }
+
     wrapper {
         gradleVersion = properties("gradleVersion")
     }
@@ -124,7 +135,6 @@ tasks {
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
     }
 }
-
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
     jvmTarget = properties("javaVersion")
