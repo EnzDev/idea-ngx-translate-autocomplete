@@ -42,11 +42,11 @@ jobs:
 
       # Check out current repository
       - name: Fetch Sources
-        uses: actions/checkout@v3.0.2
+        uses: actions/checkout@v3.2.0
 
       # Validate wrapper
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v1.0.4
+        uses: gradle/wrapper-validation-action@v1.0.5
 
       # Setup Java 11 environment for the next steps
       - name: Setup Java
@@ -77,19 +77,25 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew check
 
       # Collect Tests Result of failed tests
       - name: Collect Tests Result
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3.1.1
         with:
           name: tests-result
           path: ${{ github.workspace }}/build/reports/tests
 
+      # Upload Kover report to CodeCov
+      - name: Upload Code Coverage Report
+        uses: codecov/codecov-action@v3
+        with:
+          files: ${{ github.workspace }}/build/reports/kover/xml/report.xml
+
       # Cache Plugin Verifier IDEs
       - name: Setup Plugin Verifier IDEs Cache
-        uses: actions/cache@v3.0.7
+        uses: actions/cache@v3.0.11
         with:
           path: ${{ steps.properties.outputs.pluginVerifierHomeDir }}/ides
           key: plugin-verifier-${{ hashFiles('build/listProductsReleases.txt') }}
@@ -108,7 +114,7 @@ jobs:
 
       # Run Qodana inspections
       - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v2022.2.1
+        uses: JetBrains/qodana-action@v2022.2.3
 
       # Prepare plugin archive content for creating artifact
       - name: Prepare Plugin Artifact
@@ -123,7 +129,7 @@ jobs:
 
       # Store already-built plugin as an artifact for downloading
       - name: Upload artifact
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ steps.artifact.outputs.filename }}
           path: ./build/distributions/content/*/*
