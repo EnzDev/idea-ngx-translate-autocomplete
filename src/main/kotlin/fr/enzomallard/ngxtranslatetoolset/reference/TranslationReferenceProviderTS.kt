@@ -10,7 +10,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.util.ProcessingContext
-import com.intellij.util.castSafelyTo
 import fr.enzomallard.ngxtranslatetoolset.psi.TranslationUtils
 
 /**
@@ -19,11 +18,10 @@ import fr.enzomallard.ngxtranslatetoolset.psi.TranslationUtils
 class TranslationReferenceProviderTS : PsiReferenceProvider() {
     override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
         // Check for a 'translate' function
-
         val function = JSHierarchyUtils
             .getTypeHierarchyTargetElement(element.parent.parent.children.first() as? JSReferenceExpression)
-            .castSafelyTo<TypeScriptFunction>()
-            .takeIf { it?.name == TranslationUtils.INSTANT_KEYWORD }
+            .let { it as? TypeScriptFunction }
+            ?.takeIf { it.name == TranslationUtils.INSTANT_KEYWORD }
             ?: return arrayOf()
 
         // Retrieve class from 'translate' function

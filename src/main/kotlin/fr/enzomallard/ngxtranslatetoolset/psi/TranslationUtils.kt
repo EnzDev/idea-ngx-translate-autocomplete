@@ -41,7 +41,7 @@ object TranslationUtils {
 
     fun findTranslationKey(module: Module?, project: Project, path: List<String>?) =
         // Don't bother filtering on files if path is empty
-        if (module == null || path == null || path.isEmpty()) emptyList<JsonStringLiteral>()
+        if (module == null || path.isNullOrEmpty()) emptyList<JsonStringLiteral>()
         else getJsonAssets(module, project).mapNotNull {
             val jsonTranslationPath = path.listIterator()
 
@@ -137,12 +137,14 @@ object TranslationUtils {
         val jsonFiles = mutableListOf<VirtualFile>()
 
         // Try to add translations from provided path
-        if (NgTranslateToolsetConfiguration.getJsonTranslationPath(project).isNotBlank()) {
-            jsonFiles += getJsonAssetsByPath(NgTranslateToolsetConfiguration.getJsonTranslationPath(project))
-        }
+        NgTranslateToolsetConfiguration.getJsonTranslationPath(project)
+            .takeIf { it.isNotBlank() }
+            ?.let { jsonFiles += getJsonAssetsByPath(it) }
+
 
         // Fallback if no translation file exists in provided path or provided patch not configured
-        if (jsonFiles.isEmpty()) jsonFiles += getJsonAssetsByAssetsFilter(module)
+        if (jsonFiles.isEmpty())
+            jsonFiles += getJsonAssetsByAssetsFilter(module)
 
         return jsonFiles
     }
