@@ -28,7 +28,7 @@ repositories {
 }
 
 dependencies {
-    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.7.22")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.8.10")
     implementation(kotlin("stdlib-jdk8"))
 }
 
