@@ -4,6 +4,14 @@
 
 ## [Unreleased]
 
+## [0.1.5] - 2023-05-04
+
+### Fixed
+- Bump compatibility to Intellij 2023.1
+
+### Added
+- Support for Transloco
+
 ## [0.1.4] - 2022-12-21
 
 ### Fixed
@@ -47,6 +55,7 @@
 - Translation key autocompletion in templates
 
 [Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.4...HEAD
+[0.1.5]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.4...v0.1.5
 [0.1.4]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.3...v0.1.4
 [0.1.3]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.2...v0.1.3
 [0.1.2]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.1...v0.1.2
