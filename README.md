@@ -6,7 +6,7 @@
 
 <!-- Plugin description -->
 NgTranslate Toolset extends Angular language support for the NgxTranslate library.  
-It provides translation key referencing and autocompletion in your angular templates.
+It provides translation key referencing and autocompletion in your angular templates. Also works for Transloco.
 
 Plugins look in the resources directories by default, you can
 configure the plugin in `Settings...` > `Tools` > `NgTranslate Toolset`.  

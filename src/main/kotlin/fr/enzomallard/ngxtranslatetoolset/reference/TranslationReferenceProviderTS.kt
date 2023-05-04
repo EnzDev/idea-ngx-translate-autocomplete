@@ -21,7 +21,7 @@ class TranslationReferenceProviderTS : PsiReferenceProvider() {
         val function = JSHierarchyUtils
             .getTypeHierarchyTargetElement(element.parent.parent.children.first() as? JSReferenceExpression)
             .let { it as? TypeScriptFunction }
-            ?.takeIf { it.name == TranslationUtils.INSTANT_KEYWORD }
+            ?.takeIf { it.name == TranslationUtils.INSTANT_KEYWORD || it.name == TranslationUtils.INSTANT_KEYWORD_2 }
             ?: return arrayOf()
 
         // Retrieve class from 'translate' function
