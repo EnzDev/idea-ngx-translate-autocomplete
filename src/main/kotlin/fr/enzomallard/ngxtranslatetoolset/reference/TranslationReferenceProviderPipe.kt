@@ -33,6 +33,15 @@ class TranslationReferenceProviderPipe : PsiReferenceProvider() {
                     .firstOrNull()
                     ?.textMatches(TranslationUtils.TRANSLATION_KEYWORD)
                     ?: false
+                    if (!validated) {
+                        validated = parentPointer
+                            .children
+                            .filterIsInstance<Angular2PipeReferenceExpression>()
+                            .firstOrNull()
+                            ?.textMatches(TranslationUtils.TRANSLATION_KEYWORD_2)
+                            ?: false
+
+                    }
             }
         }
 

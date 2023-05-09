@@ -30,9 +30,11 @@ fun List<JsonValue>.toTypedResolveResult(): Array<ResolveResult> = this
 object TranslationUtils {
     @NonNls
     const val TRANSLATION_KEYWORD = "translate"
+    const val TRANSLATION_KEYWORD_2 = "transloco"
 
     @NonNls
     const val INSTANT_KEYWORD = "instant"
+    const val INSTANT_KEYWORD_2 = "translate"
 
     const val ICON_SIZE = 8
 
