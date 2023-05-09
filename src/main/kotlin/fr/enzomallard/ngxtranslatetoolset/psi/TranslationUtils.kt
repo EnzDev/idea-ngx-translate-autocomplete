@@ -27,12 +27,13 @@ fun List<JsonValue>.toTypedResolveResult(): Array<ResolveResult> = this
     .map(::PsiElementResolveResult)
     .toTypedArray()
 
+
 object TranslationUtils {
     @NonNls
-    const val TRANSLATION_KEYWORD = "translate"
-
-    @NonNls
-    const val INSTANT_KEYWORD = "instant"
+    val FRAMEWORKS = listOf(
+        TranslationFramework("translate", "instant"),
+        TranslationFramework("transloco", "translate"),
+    )
 
     const val ICON_SIZE = 8
 

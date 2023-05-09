@@ -3,6 +3,11 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+### Fixed
+- Bump compatibility to Intellij 2023.1
+
+### Added
+- Support for Transloco
 
 ## [0.1.4] - 2022-12-21
 
