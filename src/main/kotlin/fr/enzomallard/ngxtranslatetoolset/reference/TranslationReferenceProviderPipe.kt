@@ -7,6 +7,7 @@ import com.intellij.psi.PsiReference
 import com.intellij.psi.PsiReferenceProvider
 import com.intellij.psi.html.HtmlTag
 import com.intellij.util.ProcessingContext
+import fr.enzomallard.ngxtranslatetoolset.psi.TranslationFramework
 import fr.enzomallard.ngxtranslatetoolset.psi.TranslationUtils
 import org.angular2.lang.expr.psi.Angular2PipeExpression
 import org.angular2.lang.expr.psi.Angular2PipeReferenceExpression
@@ -26,22 +27,17 @@ class TranslationReferenceProviderPipe : PsiReferenceProvider() {
         var validated = false
         while (parentPointer !is HtmlTag && !validated) {
             parentPointer = parentPointer.parent
-            if (parentPointer is Angular2PipeExpression) { // Check for expr|translate
+            if (parentPointer is Angular2PipeExpression) { // Check for expr|pipe
                 validated = parentPointer
                     .children
                     .filterIsInstance<Angular2PipeReferenceExpression>()
                     .firstOrNull()
-                    ?.textMatches(TranslationUtils.TRANSLATION_KEYWORD)
-                    ?: false
-                    if (!validated) {
-                        validated = parentPointer
-                            .children
-                            .filterIsInstance<Angular2PipeReferenceExpression>()
-                            .firstOrNull()
-                            ?.textMatches(TranslationUtils.TRANSLATION_KEYWORD_2)
-                            ?: false
-
+                    ?.let { expression ->
+                        TranslationUtils.FRAMEWORKS
+                            .map(TranslationFramework::pipeName)
+                            .any { expression.textMatches(it) }
                     }
+                    ?: false
             }
         }
 
