@@ -28,6 +28,5 @@
         <projectConfigurable parentId="tools" instance="fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfigurable"
                              id="fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfigurable" displayName="NgTranslate Toolset"
                              nonDefaultProject="true"/>
-        <projectService serviceImplementation="fr.enzomallard.ngxtranslatetoolset.configuration.NgTranslateToolsetConfiguration"/>
     </extensions>
 </idea-plugin>

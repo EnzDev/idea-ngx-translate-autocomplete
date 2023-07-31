@@ -53,7 +53,7 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
             NgTranslateToolsetBundle.message("configuration.modal.description.default_translation"),
             project,
             FileChooserDescriptor(true, false, false, false, false, false)
-                .withFileFilter(::isJsonFile)
+                .withFileFilter { it.isJsonFile() }
         )
     }
 
@@ -63,7 +63,7 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
             NgTranslateToolsetBundle.message("configuration.modal.description.translation_folder"),
             project,
             FileChooserDescriptor(false, true, false, false, false, false)
-                .withFileFilter(::isJsonFolder)
+                .withFileFilter(VirtualFile::isJsonFolder)
         )
     }
 
@@ -97,10 +97,6 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
     }
 
     companion object {
-        private fun isJsonFolder(file: VirtualFile) =
-            file.isDirectory && file.children.any { it.fileType === JsonFileType.INSTANCE }
-
-        private fun isJsonFile(file: VirtualFile) = file.fileType === JsonFileType.INSTANCE
 
         private const val MAIN_PANEL_HGAP = 10
         private const val MAIN_PANEL_VGAP = 5
@@ -111,3 +107,7 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
         private const val LABEL_VGAP = 1
     }
 }
+
+private fun VirtualFile.isJsonFolder() = isDirectory && children.any { isJsonFile() }
+
+private fun VirtualFile.isJsonFile() = fileType === JsonFileType.INSTANCE

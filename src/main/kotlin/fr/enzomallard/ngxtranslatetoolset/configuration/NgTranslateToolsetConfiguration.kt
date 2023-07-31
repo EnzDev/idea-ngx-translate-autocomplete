@@ -1,6 +1,7 @@
 package fr.enzomallard.ngxtranslatetoolset.configuration
 
 import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.StoragePathMacros
@@ -10,6 +11,7 @@ import com.intellij.openapi.util.text.StringUtil
 import org.jdom.Element
 
 @State(name = "NgTranslateToolsetConfiguration", storages = [Storage(StoragePathMacros.WORKSPACE_FILE)])
+@Service(Service.Level.PROJECT)
 class NgTranslateToolsetConfiguration : PersistentStateComponent<Element> {
     var lang: String = ""
         private set
