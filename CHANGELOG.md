@@ -3,6 +3,9 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+### Fixed
+- Bump compatibility to Intellij 2023.2
+- Updated gradle configuration
 
 ## [0.1.5] - 2023-05-09
 
