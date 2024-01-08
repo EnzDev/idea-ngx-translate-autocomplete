@@ -3,6 +3,8 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+
+## [0.1.7] - 2024-01-08
 - Bump compatibility to Intellij 2023.2
 
 ## [0.1.6] - 2023-08-04
@@ -61,7 +63,8 @@
 - Translation key referencing to json translations
 - Translation key autocompletion in templates
 
-[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.6...HEAD
+[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.7...HEAD
+[0.1.7]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.6...v0.1.7
 [0.1.6]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.5...v0.1.6
 [0.1.5]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.4...v0.1.5
 [0.1.4]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.3...v0.1.4
