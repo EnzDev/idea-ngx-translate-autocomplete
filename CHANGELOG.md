@@ -3,6 +3,7 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+- Bump compatibility to Intellij 2023.2
 
 ## [0.1.6] - 2023-08-04
 
