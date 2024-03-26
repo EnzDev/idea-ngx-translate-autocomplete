@@ -24,7 +24,7 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
 
-      # Setup Java environment for the next steps
+      # Set up Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -33,7 +33,9 @@ jobs:
 
       # Setup Gradle
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-home-cache-cleanup: true
 
       # Set environment variables
       - name: Export Properties
@@ -72,7 +74,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ github.event.release.tag_name }} ./build/distributions/*
 
-      # Create pull request
+      # Create a pull request
       - name: Create Pull Request
         if: ${{ steps.properties.outputs.changelog != '' }}
         env:
@@ -91,6 +93,7 @@ jobs:
           
           gh label create "$LABEL" \
             --description "Pull requests with release changelog update" \
+            --force \
             || true
 
           gh pr create \
