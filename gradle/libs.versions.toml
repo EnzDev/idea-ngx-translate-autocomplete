@@ -3,18 +3,18 @@
 annotations = "24.1.0"
 
 # plugins
-kotlin = "1.9.23"
-changelog = "2.2.0"
-intelliJPlatformPlugin = "2.1.0"
-qodana = "2023.3.1"
-kover = "0.7.6"
+kotlin = "1.9.25"
+changelog = "2.2.1"
+intelliJPlatform = "2.1.0"
+qodana = "2024.2.3"
+kover = "0.8.3"
 
 [libraries]
 annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
-intelliJPlatformPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatformPlugin" }
+intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "intelliJPlatform" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }
