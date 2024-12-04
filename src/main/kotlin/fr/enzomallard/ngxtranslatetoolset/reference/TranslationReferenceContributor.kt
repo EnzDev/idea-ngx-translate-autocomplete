@@ -8,7 +8,7 @@ import org.angular2.lang.expr.Angular2Language
 class TranslationReferenceContributor : PsiReferenceContributor() {
     override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
         registrar.registerReferenceProvider(
-            ElementPatterns.HTML_TRANSLATION_PLATFORM_PATTERN.withLanguage(Angular2Language.INSTANCE),
+            ElementPatterns.HTML_TRANSLATION_PLATFORM_PATTERN.withLanguage(Angular2Language),
             TranslationReferenceProviderPipe()
         )
 
