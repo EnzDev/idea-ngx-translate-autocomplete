@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.1.9] - 2024-12-05
+
 - Bump compatibility to Intellij 2024.3
 
 ## [0.1.8] - 2024-03-28
@@ -81,7 +83,8 @@
 - Translation key referencing to json translations
 - Translation key autocompletion in templates
 
-[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.8...HEAD
+[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.9...HEAD
+[0.1.9]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.8...v0.1.9
 [0.1.8]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.7...v0.1.8
 [0.1.7]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.6...v0.1.7
 [0.1.6]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.5...v0.1.6
