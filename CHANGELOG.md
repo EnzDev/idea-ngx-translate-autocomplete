@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Bump compatibility to Intellij 2024.3
+
 ## [0.1.8] - 2024-03-28
 
 - Bump compatibility to Intellij 2024.1
