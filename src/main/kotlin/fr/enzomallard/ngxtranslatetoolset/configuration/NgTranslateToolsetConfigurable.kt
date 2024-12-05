@@ -47,23 +47,28 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
     }
 
     private fun createLangInput() = TextFieldWithBrowseButton().apply {
-
+        val descriptor = FileChooserDescriptor(true, false, false, false, false, false)
+            .withFileFilter(VirtualFile::isJsonFile)
+            .withTitle(NgTranslateToolsetBundle.message("configuration.modal.title.default_translation"))
+            .withDescription(NgTranslateToolsetBundle.message("configuration.modal.description.default_translation"))
         addBrowseFolderListener(
-            NgTranslateToolsetBundle.message("configuration.modal.title.default_translation"),
-            NgTranslateToolsetBundle.message("configuration.modal.description.default_translation"),
+            descriptor.title,
+            descriptor.description,
             project,
-            FileChooserDescriptor(true, false, false, false, false, false)
-                .withFileFilter { it.isJsonFile() }
+            descriptor
         )
     }
 
     private fun createI18PathInput() = TextFieldWithBrowseButton().apply {
+        val descriptor = FileChooserDescriptor(false, true, false, false, false, false)
+            .withFileFilter(VirtualFile::isJsonFolder)
+            .withTitle(NgTranslateToolsetBundle.message("configuration.modal.title.translation_folder"))
+            .withDescription(NgTranslateToolsetBundle.message("configuration.modal.description.translation_folder"))
         addBrowseFolderListener(
-            NgTranslateToolsetBundle.message("configuration.modal.title.translation_folder"),
-            NgTranslateToolsetBundle.message("configuration.modal.description.translation_folder"),
+            descriptor.title,
+            descriptor.description,
             project,
-            FileChooserDescriptor(false, true, false, false, false, false)
-                .withFileFilter(VirtualFile::isJsonFolder)
+            descriptor
         )
     }
 
