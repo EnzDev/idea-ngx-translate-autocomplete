@@ -71,7 +71,7 @@ object TranslationUtils {
             is JsonObject ->
                 value.propertyList
                     .filter {
-                        lookupKey.isEmpty() || it.name.matches(".*${lookupKey.first()}.*".toRegex())
+                        lookupKey.isEmpty() || it.name.matches(".*${Regex.escape(lookupKey.first())}.*".toRegex())
                     }.map { prop ->
                         ProgressManager.checkCanceled() // Check cancel before continuing recursion
                         recurseKeysWithFilter(prop.value!!, lookupKey.drop(1), keys + prop.name)
