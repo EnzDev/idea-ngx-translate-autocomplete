@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+- Fix issue with autocompletion not working or breaking character after completion in some cases
+
 ## [0.1.9] - 2024-12-05
 
 - Bump compatibility to Intellij 2024.3
