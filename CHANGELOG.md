@@ -4,6 +4,8 @@
 
 ## [Unreleased]
 
+## [0.1.10] - 2024-12-05
+
 - Fix issue with autocompletion not working or breaking character after completion in some cases
 
 ## [0.1.9] - 2024-12-05
@@ -85,7 +87,8 @@
 - Translation key referencing to json translations
 - Translation key autocompletion in templates
 
-[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.9...HEAD
+[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.10...HEAD
+[0.1.10]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.9...v0.1.10
 [0.1.9]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.8...v0.1.9
 [0.1.8]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.7...v0.1.8
 [0.1.7]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.6...v0.1.7
