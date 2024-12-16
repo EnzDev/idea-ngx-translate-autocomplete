@@ -2,7 +2,7 @@
 # plugins
 kotlin = "1.9.25"
 changelog = "2.2.1"
-intelliJPlatform = "2.1.0"
+intelliJPlatform = "2.2.1"
 qodana = "2024.2.6"
 kover = "0.8.3"
 
