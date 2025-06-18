@@ -3,6 +3,7 @@
 # NgTranslate Toolset Changelog
 
 ## [Unreleased]
+- Add compatibility for Intellij 2025.1 and 2025.2 EAPs (Thanks to @Minecraftschurli for the PR)
 
 ## [0.1.10] - 2024-12-05
 
