@@ -51,12 +51,7 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
             .withFileFilter(VirtualFile::isJsonFile)
             .withTitle(NgTranslateToolsetBundle.message("configuration.modal.title.default_translation"))
             .withDescription(NgTranslateToolsetBundle.message("configuration.modal.description.default_translation"))
-        addBrowseFolderListener(
-            descriptor.title,
-            descriptor.description,
-            project,
-            descriptor
-        )
+        addBrowseFolderListener(project, descriptor)
     }
 
     private fun createI18PathInput() = TextFieldWithBrowseButton().apply {
@@ -64,12 +59,7 @@ class NgTranslateToolsetConfigurable(private val project: Project) : SearchableC
             .withFileFilter(VirtualFile::isJsonFolder)
             .withTitle(NgTranslateToolsetBundle.message("configuration.modal.title.translation_folder"))
             .withDescription(NgTranslateToolsetBundle.message("configuration.modal.description.translation_folder"))
-        addBrowseFolderListener(
-            descriptor.title,
-            descriptor.description,
-            project,
-            descriptor
-        )
+        addBrowseFolderListener(project, descriptor)
     }
 
     override fun isModified(): Boolean {
