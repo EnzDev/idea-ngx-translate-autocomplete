@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+## [0.1.13] - 2026-09-25
+
+Thanks @Minecraftschurli for the update !
+
 ## [0.1.11] - 2025-06-18
 
 - Add compatibility for Intellij 2025.1 and 2025.2 EAPs (Thanks to @Minecraftschurli for the PR)
@@ -91,7 +95,8 @@
 - Translation key referencing to json translations
 - Translation key autocompletion in templates
 
-[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.11...HEAD
+[Unreleased]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.13...HEAD
+[0.1.13]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.11...v0.1.13
 [0.1.11]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.10...v0.1.11
 [0.1.10]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.9...v0.1.10
 [0.1.9]: https://plugins.jetbrains.com/plugin/17450-ngtranslate-toolset/compare/v0.1.8...v0.1.9
