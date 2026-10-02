@@ -4,7 +4,7 @@ kotlin = "2.4.10"
 changelog = "2.5.0"
 intelliJPlatform = "2.18.1"
 qodana = "2026.2.0"
-kover = "0.9.9"
+kover = "0.9.10"
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
